@@ -16,7 +16,9 @@ def test_creating_prod_invalid_details():
 
 
 def test_prod_becomes_inactive():
-    pass
+    mac = products.Product("Mac", 1000, 100)
+    mac.buy(100)
+    assert not mac.active
 
 
 pytest.main()
