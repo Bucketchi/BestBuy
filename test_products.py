@@ -21,4 +21,10 @@ def test_prod_becomes_inactive():
     assert not mac.active
 
 
+def test_buy_modifies_quantity():
+    mac = products.Product("Mac", 1000, 100)
+    mac.buy(50)
+    assert mac.quantity == 50
+
+
 pytest.main()
