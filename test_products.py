@@ -27,4 +27,10 @@ def test_buy_modifies_quantity():
     assert mac.quantity == 50
 
 
+def test_buy_too_much():
+    with pytest.raises(Exception, match="Trying to buy more than is available"):
+        mac = products.Product("Mac", 1000, 100)
+        mac.buy(1000000)
+
+
 pytest.main()
