@@ -40,3 +40,21 @@ class Product:
             raise Exception("Trying to buy more than is available")
         self.set_quantity(self.quantity - quantity)
         return quantity * self.price
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity) -> float:
+        if quantity > self.maximum:
+            raise Exception("Trying to buy more than is allowed for this item")
+        return super().buy(quantity)
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        super().__init__(name, price, None)
+
+
