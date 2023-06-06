@@ -47,6 +47,9 @@ class LimitedProduct(Product):
         super().__init__(name, price, quantity)
         self.maximum = maximum
 
+    def show(self) -> str:
+        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Maximum: {self.maximum}"
+
     def buy(self, quantity) -> float:
         if quantity > self.maximum:
             raise Exception("Trying to buy more than is allowed for this item")
@@ -55,6 +58,11 @@ class LimitedProduct(Product):
 
 class NonStockedProduct(Product):
     def __init__(self, name, price):
-        super().__init__(name, price, None)
+        super().__init__(name, price, 0)
+        self.active = True
 
+    def show(self) -> str:
+        return f"{self.name}, Price: {self.price}"
 
+    def buy(self, quantity) -> float:
+        return quantity * self.price
