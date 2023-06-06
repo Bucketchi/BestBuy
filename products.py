@@ -1,5 +1,7 @@
+# Main Product class
 class Product:
     def __init__(self, name, price, quantity):
+        self.promotion = None
         if name != "":
             self.name = name
         else:
@@ -23,6 +25,12 @@ class Product:
         if self.quantity == 0:
             self.deactivate()
 
+    def set_promotion(self, promotion):
+        self.promotion = promotion
+
+    def get_promotion(self):
+        return self.promotion.name
+
     def is_active(self) -> bool:
         return self.active
 
@@ -33,23 +41,32 @@ class Product:
         self.active = False
 
     def show(self) -> str:
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        info = f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        if self.promotion is not None:
+            info += f", Promotion: {self.promotion.name}"
+        return info
 
     def buy(self, quantity) -> float:
         if self.quantity - quantity < 0:
             raise Exception("Trying to buy more than is available")
         self.set_quantity(self.quantity - quantity)
+        if self.promotion is not None:
+            return self.promotion.apply_promotion(self, quantity)
         return quantity * self.price
 
 
+# Child class of Product, for products with limited amount per purchase
 class LimitedProduct(Product):
+    # New variable maximum added
     def __init__(self, name, price, quantity, maximum):
         super().__init__(name, price, quantity)
         self.maximum = maximum
 
+    # Maximum added to info
     def show(self) -> str:
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Maximum: {self.maximum}"
+        return super().show() + f", Maximum: {self.maximum}"
 
+    # Checks if valid amount
     def buy(self, quantity) -> float:
         if quantity > self.maximum:
             raise Exception("Trying to buy more than is allowed for this item")
@@ -57,12 +74,20 @@ class LimitedProduct(Product):
 
 
 class NonStockedProduct(Product):
+    # Sets default quantity to 0
     def __init__(self, name, price):
         super().__init__(name, price, 0)
         self.active = True
 
+    # Shows everything but the quantity (not relevant)
     def show(self) -> str:
-        return f"{self.name}, Price: {self.price}"
+        info = f"{self.name}, Price: {self.price}"
+        if self.promotion is not None:
+            info += f", Promotion: {self.promotion.name}"
+        return info
 
+    # No need to check if valid quantity
     def buy(self, quantity) -> float:
+        if self.promotion is not None:
+            return self.promotion.apply_promotion(self, quantity)
         return quantity * self.price
